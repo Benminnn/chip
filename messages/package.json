@@ -13,7 +13,8 @@
       "url":"^0.11.0",
       "fs":"^0.0.1-security",
       "aws-sdk":"^2.97.0",
-      "azure-storage":"^2.2.2"
+      "azure-storage": "",
+      "underscore":"^1.8.3"
     },
     "devDependencies": {
       "mocha": "^2.4.5"
