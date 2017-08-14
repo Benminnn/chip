@@ -8,6 +8,18 @@ https://aka.ms/abs-node-luis
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
+var blob = require('blob');
+var URL = require('url');
+var Fs = require('fs');
+//var Player = require('player');
+const play = require('audio-play');
+const load = require('audio-loader');
+
+const AWS = require('aws-sdk');
+
+/* Buffer for text to be spoken, cleared once said */
+var voicebox = "";
+var speech;
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 
@@ -35,7 +47,22 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 //.matches('<yourIntent>') //See details at http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 
 intents.onDefault((session) => {
-    session.send('Sorry, can\'t help with that, still learning.', session.message.text);
+    voicebox = 'Not sure what to say, sorry.';
+    var voice_mp3 = get_voice(voicebox);
+    voicebox = "";
+
+    var content_url = __dirname  + "/speech.mp3";
+
+    session.send({
+        text: voicebox,
+        attachments: [
+            {
+                contentType: "audio/mpeg",
+                contentUrl: content_url,                
+                name: "speech",
+            }
+        ]
+    }); 
 });
 
 bot.dialog('/', intents);    
@@ -49,4 +76,42 @@ if (useEmulator) {
     server.post('/api/messages', connector.listen());    
 } else {
     module.exports = { default: connector.listen() }
+};
+
+function get_voice(message){
+    
+    var aws_settings = {
+        awsRegion: "us-west-2",
+        pollyVoiceId: "Emma",
+        cacheSpeech: true
+    }    
+    //AWS.config.credentials = settings.awsCredentials;
+    AWS.config.region = aws_settings.awsRegion;
+
+    // Make request to Amazon polly
+    function requestSpeechFromAWS(message) {
+        var polly = new AWS.Polly();
+        var params = {
+            OutputFormat: 'mp3',
+            Text: message,
+            VoiceId: aws_settings.pollyVoiceId
+        }
+
+        polly.synthesizeSpeech(params, (err, data) => {
+            if (err) {
+                console.log(err.code)
+            } else if (data) {
+                if (data.AudioStream instanceof Buffer) {
+                    Fs.writeFile("./messages/speech.mp3", data.AudioStream, function(err) {
+                        if (err) {
+                            return console.log(err)
+                        }
+                        console.log("The file was saved!")
+                    })
+                }
+            }
+        })
+    };
+
+    requestSpeechFromAWS(message);
 }
