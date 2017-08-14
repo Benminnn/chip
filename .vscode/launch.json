@@ -14,7 +14,9 @@
                 "LuisAPIKey": "f899a7d5dda546fb854f6d930d4e3a98",
                 "LuisAPIHostName":"westus.api.cognitive.microsoft.com",
                 "BotStateEndpoint":"",
-                "BotopenIdMetadata":""
+                "BotopenIdMetadata":"",
+                "MicrosoftAppId": "5e1a5ac1-50a3-4fb5-a659-f58446cdece3",
+                "MicrosoftAppPassword": "5eAEW7kzAONDUgqLFZjPtka",
             }
         }
     ]

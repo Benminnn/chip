@@ -11,11 +11,7 @@ var path = require('path');
 var blob = require('blob');
 var URL = require('url');
 var Fs = require('fs');
-//var Player = require('player');
-const play = require('audio-play');
-const load = require('audio-loader');
-
-const AWS = require('aws-sdk');
+var AWS = require('aws-sdk');
 
 /* Buffer for text to be spoken, cleared once said */
 var voicebox = "";
@@ -53,16 +49,16 @@ intents.onDefault((session) => {
 
     var content_url = __dirname  + "/speech.mp3";
 
-    session.send({
-        text: voicebox,
-        attachments: [
-            {
-                contentType: "audio/mpeg",
-                contentUrl: content_url,                
-                name: "speech",
-            }
-        ]
-    }); 
+    var return_card = new builder.AudioCard(session);
+    return_card.autostart(true);
+    return_card.media([{
+        profile: "audio/mpeg",
+        url: content_url,
+    }]);
+
+    // attach the card to the reply message
+    var msg = new builder.Message(session).addAttachment(return_card);
+    session.send(msg);
 });
 
 bot.dialog('/', intents);    
@@ -80,10 +76,27 @@ if (useEmulator) {
 
 function get_voice(message){
     
+    /*
+    Nicole
+    Russell
+    Amy
+    Brian
+    Emma
+    Raveena
+    Ivy
+    Joanna
+    Joey
+    Justin
+    Kendra
+    Kimberly
+    Salli
+    Geraint
+    */
+
     var aws_settings = {
         awsRegion: "us-west-2",
-        pollyVoiceId: "Emma",
-        cacheSpeech: true
+        pollyVoiceId: "Salli",
+        cacheSpeech: false
     }    
     //AWS.config.credentials = settings.awsCredentials;
     AWS.config.region = aws_settings.awsRegion;
@@ -102,11 +115,10 @@ function get_voice(message){
                 console.log(err.code)
             } else if (data) {
                 if (data.AudioStream instanceof Buffer) {
-                    Fs.writeFile("./messages/speech.mp3", data.AudioStream, function(err) {
+                    Fs.writeFile(__dirname  + "/speech.mp3", data.AudioStream, function(err) {
                         if (err) {
                             return console.log(err)
                         }
-                        console.log("The file was saved!")
                     })
                 }
             }
