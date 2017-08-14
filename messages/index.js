@@ -11,6 +11,7 @@ var path = require('path');
 var URL = require('url');
 var Fs = require('fs');
 var AWS = require('aws-sdk');
+var azure_storage = require('azure-storage');
 
 /* Buffer for text to be spoken, cleared once said */
 var voicebox = "";
@@ -42,17 +43,39 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 //.matches('<yourIntent>') //See details at http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 
 intents.onDefault((session) => {
-    voicebox = 'sure';
-    var voice_mp3 = get_voice(voicebox);
-    voicebox = "";
+    var magic_8 = Array(
+        'Sure',
+        "It is certain",
+        "It is decidedly so",
+        "Without a doubt",
+        "Yes definitely",
+        "You may rely on it",
+        "As I see it, yes",
+        "Most likely",
+        "Outlook good",
+        "Yes",
+        "Signs point to yes",
+        "Reply hazy, try again",
+        "Ask again later",
+        "Better not tell you now",
+        "Cannot predict now",
+        "Concentrate and ask again",
+        "Don't count on it",
+        "My reply is no",
+        "My sources say no",
+        "Outlook not so good",
+        "Very doubtful"
+    );
 
-    var content_url = __dirname  + "/speech.mp3";
+    voicebox = magic_8[Math.floor(Math.random()*magic_8.length)];
+    var content_url = get_voice(voicebox);
 
     var return_card = new builder.AudioCard(session);
     return_card.autostart(true);
     return_card.media([{
         profile: "audio/mpeg",
         url: content_url,
+        text: voicebox
     }]);
 
     // attach the card to the reply message
@@ -96,12 +119,17 @@ function get_voice(message){
         awsRegion: "us-west-2",
         pollyVoiceId: "Salli",
         cacheSpeech: false
-    }    
+    }
+
     //AWS.config.credentials = settings.awsCredentials;
     AWS.config.region = aws_settings.awsRegion;
 
     // Make request to Amazon polly
     function requestSpeechFromAWS(message) {
+
+        var request_num = Date.now();
+        var speech_name = "speech-" + request_num + ".mp3";
+        var return_url = "";
         var polly = new AWS.Polly();
         var params = {
             OutputFormat: 'mp3',
@@ -114,15 +142,39 @@ function get_voice(message){
                 console.log(err.code)
             } else if (data) {
                 if (data.AudioStream instanceof Buffer) {
-                    Fs.writeFile(__dirname  + "/speech.mp3", data.AudioStream, function(err) {
+
+                    /* write mp3 to azure blob storage */
+                    var azure = require('azure-storage');
+                    var blobService = azure.createBlobService();
+                    blobService.createContainerIfNotExists('chip-speech', {
+                        publicAccessLevel: 'blob'
+                    }, function(error, result, response) {
+                        if (!error) {
+                            // if result = true, container was created.
+                            // if result = false, container already existed.
+                        }
+                    });
+
+                    var azure = require('azure-storage');
+                    var blobService = azure.createBlobService();
+                    
+                    Fs.writeFile(__dirname  + "/speech_local/" + speech_name, data.AudioStream, function(err) {
                         if (err) {
                             return console.log(err)
+                        } else {
+                            blobService.createBlockBlobFromLocalFile('chip-speech', speech_name, __dirname  + "/speech_local/" + speech_name, function(error, result, response) {
+                                if (error) {
+                                    console.log(error);
+                                }
+                            });
                         }
-                    })
-                }
-            }
-        })
+                    });                 
+                };
+            };
+        });
+
+        return "https://chipjhg6z3.blob.core.windows.net/chip-speech/" + speech_name;
     };
 
-    requestSpeechFromAWS(message);
+    return requestSpeechFromAWS(message);
 }

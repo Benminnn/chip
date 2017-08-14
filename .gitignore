@@ -5,3 +5,4 @@ node_modules/
 messages/speech.mp3
 .vscode
 messages/speech.mp3
+messages/speech_local/
