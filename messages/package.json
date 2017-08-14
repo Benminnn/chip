@@ -11,7 +11,7 @@
       "stream":"^0.0.2",
       "path":"^0.12.7",
       "url":"^0.11.0",
-      "fs":"^0.0.1-security",
+      "fs": "",
       "aws-sdk":"^2.97.0",
       "azure-storage": "",
       "underscore":"^1.8.3"
