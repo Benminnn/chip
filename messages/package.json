@@ -14,7 +14,7 @@
       "fs": "",
       "aws-sdk":"^2.97.0",
       "azure-storage": "",
-      "underscore":"^1.8.3"
+      "documentdb":"^1.12.2"
     },
     "devDependencies": {
       "mocha": "^2.4.5"
