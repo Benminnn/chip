@@ -8,8 +8,11 @@
       "botbuilder": "^3.9.0",
       "botbuilder-azure": "",
       "restify": "^4.2.0",
-      "aws-sdk":"^2.97.0",
-      "stream":"^0.0.2"
+      "stream":"^0.0.2",
+      "path":"^0.12.7",
+      "url":"^0.11.0",
+      "fs":"^0.0.1-security",
+      "aws-sdk":"^2.97.0"
     },
     "devDependencies": {
       "mocha": "^2.4.5"

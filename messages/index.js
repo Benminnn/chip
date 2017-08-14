@@ -8,7 +8,6 @@ https://aka.ms/abs-node-luis
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
-var blob = require('blob');
 var URL = require('url');
 var Fs = require('fs');
 var AWS = require('aws-sdk');
