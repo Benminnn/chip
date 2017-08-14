@@ -43,7 +43,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 //.matches('<yourIntent>') //See details at http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 
 intents.onDefault((session) => {
-    voicebox = 'Not sure what to say, sorry.';
+    voicebox = 'sure';
     var voice_mp3 = get_voice(voicebox);
     voicebox = "";
 
