@@ -2,7 +2,9 @@
 typings/
 node_modules/
 *.js.map
-messages/speech.mp3
 .vscode
-messages/speech.mp3
-messages/speech_local/
+messages/speech_local/*
+!messages/speech_local/.gitkeep 
+
+
+

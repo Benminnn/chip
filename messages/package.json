@@ -13,8 +13,7 @@
       "url":"^0.11.0",
       "fs": "",
       "aws-sdk":"^2.97.0",
-      "azure-storage": "",
-      "documentdb":"^1.12.2"
+      "azure-storage": ""
     },
     "devDependencies": {
       "mocha": "^2.4.5"
