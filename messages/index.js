@@ -34,8 +34,6 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
 //.matches('<yourIntent>') //See details at http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 
-console.log('lol');
-
 intents.onDefault((session) => {
     session.send('Sorry, can\'t help with that, still learning.', session.message.text);
 });
@@ -52,4 +50,3 @@ if (useEmulator) {
 } else {
     module.exports = { default: connector.listen() }
 }
-
