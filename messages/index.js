@@ -7,11 +7,15 @@ https://aka.ms/abs-node-luis
 "use strict";
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
+
 var path = require('path');
 var URL = require('url');
 var Fs = require('fs');
+
 var AWS = require('aws-sdk');
 var azure_storage = require('azure-storage');
+
+var fs = require('fs');
 
 /* Buffer for text to be spoken, cleared once said */
 var voicebox = "";
@@ -158,7 +162,9 @@ function get_voice(message){
                     var azure = require('azure-storage');
                     var blobService = azure.createBlobService();
                     
-                    Fs.writeFile(__dirname  + "/speech_local/" + speech_name, data.AudioStream, function(err) {
+
+                    
+                    fs.writeFile(__dirname  + "/speech_local/" + speech_name, data.AudioStream, function(err) {
                         if (err) {
                             return console.log(err)
                         } else {
